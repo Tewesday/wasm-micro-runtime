@@ -55,7 +55,7 @@ elseif (WAMR_BUILD_TARGET STREQUAL "X86_64" OR WAMR_BUILD_TARGET STREQUAL "AMD_6
       if ((CMAKE_C_COMPILER MATCHES ".*clang.*" OR CMAKE_C_COMPILER_ID MATCHES ".*Clang"))
         set (source_all ${c_source_all} ${IWASM_COMMON_DIR}/arch/invokeNative_nasm64_simd.asm)
       elseif (NOT MINGW)
-        set (source_all ${c_source_all} ${IWASM_COMMON_DIR}/arch/invokeNative_em64.asm)
+        set (source_all ${c_source_all} ${IWASM_COMMON_DIR}/arch/invokeNative_em64_simd.asm)
       else ()
         set (source_all ${c_source_all} ${IWASM_COMMON_DIR}/arch/invokeNative_mingw_x64_simd.s)
       endif ()
