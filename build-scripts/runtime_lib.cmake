@@ -188,15 +188,30 @@ file (GLOB header
 LIST (APPEND RUNTIME_LIB_HEADER_LIST ${header})
 
 if (WAMR_BUILD_PLATFORM STREQUAL "windows")
-    enable_language (ASM_MASM)
+    if (MSVC)
+        message(STATUS "Selected ASM_MASM")
+        enable_language (ASM_MASM)
+    else()
+        message(STATUS "Selected ASM_NASM")
+        enable_language(ASM_NASM)
+        set(CMAKE_ASM_NASM_OBJECT_FORMAT win64)
+        # Create a compile option that operates on ASM_NASM files
+        # If the target has a property NASM_OBJ_FORMAT, use it, otherwise
+        # use the environment variable CMAKE_ASM_NASM_OBJECT_FORMAT
+        add_compile_options(
+                "$<$<COMPILE_LANGUAGE:ASM_NASM>:-f $<IF:$<BOOL:$<TARGET_PROPERTY:NASM_OBJ_FORMAT>>, \
+                $<TARGET_PROPERTY:NASM_OBJ_FORMAT>, ${CMAKE_ASM_NASM_OBJECT_FORMAT}>>"
+        )
+    endif()
 else()
+    message(STATUS "Selected ASM")
     enable_language (ASM)
 endif()
 
 # it will expose the runtime APIs.
 # you'll use the following command to check the exported APIs
 # dumpbin.exe /EXPORTS xxx
-if (MSVC)
+if (WAMR_BUILD_PLATFORM STREQUAL "windows")
     add_compile_definitions(COMPILING_WASM_RUNTIME_API=1)
 endif ()
 

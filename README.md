@@ -1,5 +1,9 @@
 # WebAssembly Micro Runtime
 
+---
+Fork changes:
+* Add support for clang and NASM compile on windows.
+---
 
 **A [Bytecode Alliance][BA] project**
 

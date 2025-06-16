@@ -74,9 +74,7 @@ os_clock_res_get(__wasi_clockid_t clock_id, __wasi_timestamp_t *resolution)
             ULONG maximum_time;
             ULONG minimum_time;
             ULONG current_time;
-            NTSTATUS
-            status = NtQueryTimerResolution(&maximum_time, &minimum_time,
-                                            &current_time);
+            NtQueryTimerResolution(&maximum_time, &minimum_time, &current_time);
             uint64 result = (uint64)current_time * NANOSECONDS_PER_TICK;
             *resolution = result / (uint64)NANOSECONDS_PER_SECOND;
             return error;

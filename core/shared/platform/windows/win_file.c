@@ -1264,7 +1264,7 @@ os_readlinkat(os_file_handle handle, const char *path, char *buf,
                 UCHAR DataBuffer[1];
             } GenericReparseBuffer;
         } DUMMYUNIONNAME;
-    } REPARSE_DATA_BUFFER, *PREPARSE_DATA_BUFFER;
+    } REPARSE_DATA_BUFFER;
 #endif
 
     char buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
@@ -1295,13 +1295,13 @@ os_readlinkat(os_file_handle handle, const char *path, char *buf,
 
         if (wbufsize >= 4 && wbuf[0] == L'\\' && wbuf[1] == L'?'
             && wbuf[2] == L'?' && wbuf[3] == L'\\') {
-            // Starts with \??\ 
+            /* Starts with \??\ */
             if (wbufsize >= 6
                 && ((wbuf[4] >= L'A' && wbuf[4] <= L'Z')
                     || (wbuf[4] >= L'a' && wbuf[4] <= L'z'))
                 && wbuf[5] == L':' && (wbufsize == 6 || wbuf[6] == L'\\'))
                 {
-                    // \??\<drive>:\ 
+                    /*  \??\<drive>:\ */
                     wbuf += 4;
                     wbufsize -= 4;
                 }
@@ -1310,7 +1310,7 @@ os_readlinkat(os_file_handle handle, const char *path, char *buf,
                          && (wbuf[6] == L'C' || wbuf[6] == L'c')
                          && wbuf[7] == L'\\')
                 {
-                    // \??\UNC\<server>\<share>\ - make sure the final path looks like \\<server>\<share>\ 
+                    /*  \??\UNC\<server>\<share>\ - make sure the final path looks like \\<server>\<share>\ */
                     wbuf += 6;
                     wbuf[0] = L'\\';
                     wbufsize -= 6;
@@ -1393,8 +1393,8 @@ os_linkat(os_file_handle from_handle, const char *from_path,
     // Windows doesn't throw an error in the case that the new path has a
     // trailing slash but the target to link to is a file.
     if (to_path[to_path_len - 1] == '/'
-        || to_path[to_path_len - 1] == '\\'
-               && !is_directory(absolute_from_path)) {
+        || (to_path[to_path_len - 1] == '\\'
+               && !is_directory(absolute_from_path))) {
         return __WASI_ENOENT;
     }
 
@@ -1425,7 +1425,6 @@ os_symlinkat(const char *old_path, os_file_handle handle, const char *new_path)
     DWORD target_type = SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
 
     wchar_t old_wpath[PATH_MAX];
-    size_t old_path_len = 0;
 
     error = convert_to_wchar(old_path, old_wpath, PATH_MAX);
 
